@@ -1,0 +1,102 @@
+<script type="text/javascript">
+    RED.nodes.registerType('traffic-flash', {
+        category: 'common',
+        color: '#a6bbcf',
+        defaults: {
+            name: { value: "" },
+            flashDuration: { value: 500, validate: RED.validators.number() },
+            flashColor: { value: "green" },
+            flashShape: { value: "dot" },
+            idleState: { value: "clear" },
+            displayText: { value: "none" }
+        },
+        inputs: 1,
+        outputs: 1,
+        icon: "font-awesome/fa-bolt",
+        label: function() {
+            return this.name || "traffic flash";
+        },
+        labelStyle: function() {
+            return this.name ? "node_label_italic" : "";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="traffic-flash">
+    <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+        <label for="node-input-flashColor"><i class="fa fa-paint-brush"></i> Flash Color</label>
+        <select id="node-input-flashColor" style="width: 70%;">
+            <option value="green">Green</option>
+            <option value="yellow">Yellow</option>
+            <option value="blue">Blue</option>
+            <option value="red">Red</option>
+            <option value="grey">Grey</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-flashShape"><i class="fa fa-circle"></i> Flash Shape</label>
+        <select id="node-input-flashShape" style="width: 70%;">
+            <option value="dot">Dot (Solid)</option>
+            <option value="ring">Ring (Outline)</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-flashDuration"><i class="fa fa-clock-o"></i> Duration (ms)</label>
+        <input type="number" id="node-input-flashDuration" placeholder="500" min="50" step="50" style="width: 70%;">
+    </div>
+    <div class="form-row">
+        <label for="node-input-displayText"><i class="fa fa-font"></i> Status Text</label>
+        <select id="node-input-displayText" style="width: 70%;">
+            <option value="none">None (color indicator only)</option>
+            <option value="count">Message Count (e.g. "42 msgs")</option>
+            <option value="timestamp">Timestamp (HH:MM:SS)</option>
+            <option value="payload">Payload Preview</option>
+        </select>
+    </div>
+    <div class="form-row">
+        <label for="node-input-idleState"><i class="fa fa-pause"></i> Idle State</label>
+        <select id="node-input-idleState" style="width: 70%;">
+            <option value="clear">Clear (no status badge when idle)</option>
+            <option value="grey">Grey Ring (dim outline indicator)</option>
+            <option value="last">Keep Last Text (dim outline indicator)</option>
+        </select>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="traffic-flash">
+    <p>A lightweight, pass-through visual traffic indicator that flashes whenever a message passes through it in Node-RED.</p>
+
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>any <span class="property-type">any</span></dt>
+        <dd>Any incoming message triggers the visual flash and passes directly through to the output untouched.</dd>
+        <dt class="optional">reset <span class="property-type">boolean</span></dt>
+        <dd>If <code>msg.reset === true</code> or <code>msg.topic === 'reset'</code>, resets the message counter and returns the node to idle without passing the message along.</dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <dl class="message-properties">
+        <dt>msg <span class="property-type">object</span></dt>
+        <dd>The unmodified incoming message.</dd>
+    </dl>
+
+    <h3>Configuration</h3>
+    <ul>
+        <li><strong>Flash Color:</strong> Color of the status indicator during active traffic (green, yellow, blue, red, grey).</li>
+        <li><strong>Flash Shape:</strong> Dot (solid fill) or Ring (outline).</li>
+        <li><strong>Duration (ms):</strong> How long the flash stays active before returning to the idle state (default: 500ms).</li>
+        <li><strong>Status Text:</strong>
+            <ul>
+                <li><em>None:</em> Visual light only.</li>
+                <li><em>Message Count:</em> Displays total count of processed messages (e.g., "1 msg", "15 msgs").</li>
+                <li><em>Timestamp:</em> Shows the exact time the last message hit the node.</li>
+                <li><em>Payload Preview:</em> Displays a compact preview of <code>msg.payload</code>.</li>
+            </ul>
+        </li>
+        <li><strong>Idle State:</strong> Choose whether the status badge clears completely when idle or stays visible as a dim grey outline.</li>
+    </ul>
+</script>
